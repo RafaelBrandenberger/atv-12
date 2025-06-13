@@ -1,0 +1,25 @@
+import java_cup.runtime.*;
+
+terminal String TAG_ABRE, TAG_FECHA, TAG_AUTOFECHA, ATRIBUTO, IGUAL, VALOR, TEXTO, FECHA_TAG;
+
+non terminal html, tag, atributos, conteudo, texto;
+
+start with html;
+
+html ::= tag;
+
+tag ::= TAG_ABRE atributos FECHA_TAG conteudo TAG_FECHA
+        | TAG_ABRE atributos TAG_AUTOFECHA
+        ;
+
+atributos ::= /* vazio */
+            | atributos ATRIBUTO IGUAL VALOR
+            ;
+
+conteudo ::= /* vazio */
+           | conteudo texto
+           ;
+
+texto ::= TEXTO
+        | tag
+        ;
