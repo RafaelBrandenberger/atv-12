@@ -1,0 +1,27 @@
+import java_cup.runtime.*;
+
+parser code {:
+  public static void main(String[] args) throws Exception {
+    Compilador compilador = new Compilador();
+    compilador.compilar(args[0]);
+  }
+:}
+
+terminal IF, ELSE, ASSIGN, LT, LPAREN, RPAREN, SEMICOLON;
+terminal String ID;
+terminal Integer NUM;
+
+non terminal String prog, stmt, cond, assign;
+
+start with prog;
+
+prog ::= stmt:s SEMICOLON {: System.out.println(s); :};
+
+stmt ::= IF LPAREN cond:c RPAREN assign:a ELSE assign:b
+        {: RESULT = "if (" + c + ") " + a + " else " + b; :};
+
+cond ::= ID:id LT NUM:num 
+        {: RESULT = id + " < " + num; :};
+
+assign ::= ID:id ASSIGN NUM:num 
+        {: RESULT = id + " = " + num + ";"; :};

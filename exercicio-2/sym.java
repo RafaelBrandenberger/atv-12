@@ -6,25 +6,29 @@
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int MAIS = 3;
-  public static final int PTVIRG = 6;
-  public static final int INTEIRO = 2;
-  public static final int MENOSUNARIO = 5;
-  public static final int MENOS = 4;
+  public static final int NUM = 10;
   public static final int EOF = 0;
-  public static final int PARENTESQ = 7;
+  public static final int IF = 2;
+  public static final int ID = 9;
+  public static final int ELSE = 3;
+  public static final int ASSIGN = 4;
   public static final int error = 1;
-  public static final int PARENTDIR = 8;
+  public static final int SEMICOLON = 8;
+  public static final int RPAREN = 7;
+  public static final int LPAREN = 6;
+  public static final int LT = 5;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
-  "INTEIRO",
-  "MAIS",
-  "MENOS",
-  "MENOSUNARIO",
-  "PTVIRG",
-  "PARENTESQ",
-  "PARENTDIR"
+  "IF",
+  "ELSE",
+  "ASSIGN",
+  "LT",
+  "LPAREN",
+  "RPAREN",
+  "SEMICOLON",
+  "ID",
+  "NUM"
   };
 }
 

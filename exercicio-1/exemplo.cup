@@ -1,0 +1,54 @@
+import java_cup.runtime.*;
+
+init with {: 
+  System.out.println("Resultado:");
+:}
+
+parser code {:
+  private String nomeDoArquivo;
+  public MeuParser(java_cup.runtime.Scanner meuScanner, String nomeDoArquivo) {
+    super(meuScanner);
+    this.nomeDoArquivo = nomeDoArquivo;
+  }
+  public static void main(String[] args) throws Exception {
+    Compilador compilador = new Compilador();
+    compilador.compilar(args[0]);
+  }
+:}
+
+action code {:
+  private Integer somar(Integer a, Integer b) { return a + b; }
+  private Integer subtrair(Integer a, Integer b) { return a - b; }
+  private Integer multiplicar(Integer a, Integer b) { return a * b; }
+  private Integer dividir(Integer a, Integer b) { return a / b; }
+  private Integer resto(Integer a, Integer b) { return a % b; }
+  private Integer potencia(Integer a, Integer b) { return (int)Math.pow(a, b); }
+  private Integer inverterSinal(Integer a) { return -a; }
+:}
+
+terminal Integer INTEIRO;
+terminal MAIS, MENOS, MENOSUNARIO, MULT, DIV, RESTO, POT, PTVIRG, PARENTESQ, PARENTDIR;
+
+non terminal inicio;
+non terminal Integer expr;
+
+precedence left MAIS, MENOS;
+precedence left MULT, DIV, RESTO;
+precedence right POT;
+precedence right MENOSUNARIO;
+
+start with inicio;
+
+inicio ::= expr:e PTVIRG {: System.out.println(e + " (Arquivo: " + nomeDoArquivo + ")"); :}
+         ;
+
+expr ::= expr:a MAIS expr:b           {: RESULT = somar(a, b); :}
+      | expr:a MENOS expr:b          {: RESULT = subtrair(a, b); :}
+      | expr:a MULT expr:b           {: RESULT = multiplicar(a, b); :}
+      | expr:a DIV expr:b            {: RESULT = dividir(a, b); :}
+      | expr:a RESTO expr:b          {: RESULT = resto(a, b); :}
+      | expr:a POT expr:b            {: RESULT = potencia(a, b); :}
+      | MENOS expr:a                 {: RESULT = inverterSinal(a); :} %prec MENOSUNARIO
+      | PARENTESQ expr:a PARENTDIR   {: RESULT = a; :}
+      | INTEIRO:a                    {: RESULT = a; :}
+      ;

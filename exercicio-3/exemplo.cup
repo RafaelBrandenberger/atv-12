@@ -1,0 +1,34 @@
+import java_cup.runtime.*;
+
+terminal DO, OUT, INC, IGUAL, MENOR, PTVIRG, COLCHETEESQ, COLCHETEDIR, PARENTESQ, PARENTDIR;
+terminal Integer INTEIRO;
+terminal String ID;
+
+non terminal programa, comando, atribuicao, condicao, incremento, saida;
+
+start with programa;
+
+programa ::= comando;
+
+comando ::= DO COLCHETEESQ atribuicao:a PTVIRG condicao:b PTVIRG incremento:c COLCHETEDIR saida:d
+{: 
+  String var = (String) ((Object[])a)[0];
+  String ini = ((Object[])a)[1].toString();
+  String condVar = (String) ((Object[])b)[0];
+  String condFim = ((Object[])b)[1].toString();
+  String inc = (String)c;
+  String saidaStr = (String)d;
+  System.out.println("// Código intermediário gerado:");
+  System.out.println("for (" + var + " = " + ini + "; " + condVar + " < " + condFim + "; " + inc + ") {");
+  System.out.println("    System.out.println(" + saidaStr + ");");
+  System.out.println("}");
+:};
+
+atribuicao ::= ID:id IGUAL INTEIRO:val {: RESULT = new Object[] {id, val}; :};
+
+condicao ::= ID:id MENOR INTEIRO:val {: RESULT = new Object[] {id, val}; :};
+
+incremento ::= ID:id INC {: RESULT = id + "++"; :};
+
+saida ::= OUT PARENTESQ ID:id PARENTDIR {: RESULT = id; :}
+       | OUT ID:id                      {: RESULT = id; :};
