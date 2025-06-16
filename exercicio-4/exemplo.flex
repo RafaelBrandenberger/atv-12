@@ -1,47 +1,32 @@
+import java_cup.runtime.Symbol;
+
+%%
+
 %cup
 %unicode
 %line
 %column
 %class MeuScanner
 
-// Macros
-letra = [a-zA-Z]
-digito = [0-9]
-nome = {letra}({letra}|{digito}|[_\-])*
-espacos = [ \t\r\n]+
-aspasduplas = \"
-texto = [^<>\"]+
+letra   = [a-zA-Z_:]
+digito  = [0-9]
+id      = {letra}[a-zA-Z0-9_.:-]*
+str     = \"[^\"]*\"
 
 %%
-// Ignorar espaços
-{espacos}   { /* ignora */ }
 
-// Tag de abertura, ex: <a
-"<" {nome}        { return new Symbol(sym.TAG_ABRE, yytext()); }
+"<"     { return new Symbol(sym.LT); }
+"</"    { return new Symbol(sym.LTSLASH); }
+"/>"    { return new Symbol(sym.SLASHGT); }
+">"     { return new Symbol(sym.GT); }
 
-// Tag de fechamento, ex: </a>
-"</" {nome} ">"   { return new Symbol(sym.TAG_FECHA, yytext()); }
+{id}    { System.out.println("ID: " + yytext()); return new Symbol(sym.ID, yytext()); }
+{str}   { System.out.println("STRING: " + yytext()); return new Symbol(sym.STRING, yytext()); }
+"="     { return new Symbol(sym.EQ); }
 
-// Fim de tag de abertura, ex: >
-">"               { return new Symbol(sym.FECHA_TAG); }
+[ \t\r\n]+ { /* ignora espaços, tabs e quebras de linha */ }
 
-// Tag auto-fechante, ex: />
-"/>"              { return new Symbol(sym.TAG_AUTOFECHA); }
-
-// Atributos ex: href
-{nome}            { return new Symbol(sym.ATRIBUTO, yytext()); }
-
-// Igual (=)
-"="               { return new Symbol(sym.IGUAL); }
-
-// Valor do atributo entre aspas duplas
-{aspasduplas}{texto}{aspasduplas} {
-    String val = yytext().substring(1, yytext().length()-1);
-    return new Symbol(sym.VALOR, val);
+. { 
+  System.err.println("Caractere inválido: " + yytext()); 
+  return null; 
 }
-
-// Texto entre tags
-{texto}           { return new Symbol(sym.TEXTO, yytext()); }
-
-// Qualquer outro caractere inválido
-.                 { System.err.println("Caractere inválido: " + yytext()); }

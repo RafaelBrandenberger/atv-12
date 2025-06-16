@@ -1,25 +1,34 @@
 import java_cup.runtime.*;
 
-terminal String TAG_ABRE, TAG_FECHA, TAG_AUTOFECHA, ATRIBUTO, IGUAL, VALOR, TEXTO, FECHA_TAG;
+parser code {:
+  public static void main(String[] args) throws Exception {
+    Compilador.main(args);
+  }
+:}
 
-non terminal html, tag, atributos, conteudo, texto;
+terminal LT, GT, LTSLASH, SLASHGT, EQ;
+terminal String ID, STRING;
+
+non terminal html, tag, attr_list, attr, content;
 
 start with html;
 
-html ::= tag;
+html ::= tag
+       | tag html
+       ;
 
-tag ::= TAG_ABRE atributos FECHA_TAG conteudo TAG_FECHA
-        | TAG_ABRE atributos TAG_AUTOFECHA
-        ;
+tag ::= LT ID attr_list GT content LTSLASH ID GT
+     | LT ID attr_list SLASHGT
+     ;
 
-atributos ::= /* vazio */
-            | atributos ATRIBUTO IGUAL VALOR
+attr_list ::= /* vazio */
+            | attr attr_list
             ;
 
-conteudo ::= /* vazio */
-           | conteudo texto
-           ;
+attr ::= ID EQ STRING
+       ;
 
-texto ::= TEXTO
-        | tag
-        ;
+content ::= /* vazio */
+          | ID
+          | STRING
+          ;
